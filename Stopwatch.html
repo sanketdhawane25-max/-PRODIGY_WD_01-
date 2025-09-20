@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanized Stopwatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #4a00e0, #8e2de2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+            padding: 1rem;
+        }
+
+        .stopwatch-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .button {
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .button.start {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .button.start:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .button.pause {
+            background-color: #f44336;
+            color: white;
+        }
+        .button.pause:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .button.reset {
+            background-color: #2196F3;
+            color: white;
+        }
+        .button.reset:hover {
+            background-color: #1976D2;
+            transform: translateY(-2px);
+        }
+        
+        .button.lap {
+            background-color: #FFC107;
+            color: #333;
+        }
+        .button.lap:hover {
+            background-color: #FFB300;
+            transform: translateY(-2px);
+        }
+        
+        .laps-container {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 0;
+        }
+
+        .lap-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 480px) {
+            .stopwatch-container {
+                padding: 1.5rem;
+            }
+            .time-display {
+                font-size: 2.5rem;
+            }
+            .buttons-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .button {
+                width: 100%;
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-800 to-indigo-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="stopwatch-container">
+        <h1 class="text-3xl font-bold mb-4">Humanized Stopwatch</h1>
+        <div class="time-display" id="time-display">00:00:00</div>
+    <div class="buttons-container">
+            <button class="button start" id="start-btn">Start</button>
+            <button class="button pause hidden" id="pause-btn">Pause</button>
+            <button class="button lap hidden" id="lap-btn">Lap</button>
+            <button class="button reset" id="reset-btn">Reset</button>
+        </div>
+
+        <ul class="laps-container" id="laps-list"></ul>
+    </div>
+
+    <script>
+        const timeDisplay = document.getElementById('time-display');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const lapBtn = document.getElementById('lap-btn');
+        const lapsList = document.getElementById('laps-list');
+
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+
+        // Function to format time
+        function formatTime(ms) {
+            const date = new Date(ms);
+            const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+            const milliseconds = String(Math.floor(date.getUTCMilliseconds() / 10)).padStart(2, '0');
+            return `${minutes}:${seconds}:${milliseconds}`;
+        }
+
+        // Function to start the stopwatch
+        function startStopwatch() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                timeDisplay.textContent = formatTime(elapsedTime);
+            }, 10);
+            
+            startBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            lapBtn.classList.remove('hidden');
+        }
+
+        // Function to pause the stopwatch
+        function pauseStopwatch() {
+            clearInterval(timerInterval);
+            startBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+        }
+
+        // Function to reset the stopwatch
+        function resetStopwatch() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            timeDisplay.textContent = '00:00:00';
+            lapsList.innerHTML = '';
+            
+            startBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+            lapBtn.classList.add('hidden');
+        }
+        
+        // Function to record a lap
+        function recordLap() {
+            const lapTime = formatTime(elapsedTime);
+            const lapItem = document.createElement('li');
+            lapItem.className = 'lap-item';
+            lapItem.innerHTML = `<span>Lap ${lapsList.children.length + 1}</span><span>${lapTime}</span>`;
+            lapsList.prepend(lapItem);
+        }
+
+        // Event listeners for buttons
+        startBtn.addEventListener('click', startStopwatch);
+        pauseBtn.addEventListener('click', pauseStopwatch);
+        resetBtn.addEventListener('click', resetStopwatch);
+        lapBtn.addEventListener('click', recordLap);
+    </script>
+</body>
+</html>
