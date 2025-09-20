@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Navigation Menu</title>
+    <style>
+        /* CSS for the body to create scrollable content */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-top: 60px; /* Add padding to prevent content from hiding under the fixed header */
+            background-color: #f4f4f4;
+            height: 200vh; /* Make the page tall enough to scroll */
+        }
+
+        /* --- Default Navigation Menu Styles --- */
+        .navbar {
+            position: fixed; /* Fix the menu at the top */
+            top: 0;
+            width: 100%;
+            background-color: #333; /* Default background color */
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease; /* Smooth transition for background color change */
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar li a {
+            color: white; /* Default font color */
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 18px;
+            transition: color 0.3s ease; /* Smooth transition for font color change */
+        }
+
+        /* --- Navigation Menu Hover Effect --- */
+        .navbar li a:hover {
+            color: #ff9900; /* New font color on hover */
+        }
+
+        /* --- Scrolled Navigation Menu Styles (added by JavaScript) --- */
+        .navbar.scrolled {
+            background-color: #fff; /* New background color on scroll */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar.scrolled a {
+            color: #333; /* New font color on scroll */
+        }
+
+        .navbar.scrolled a:hover {
+            color: #ff9900;
+        }
+
+        /* Sample content for demonstration */
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #555;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" id="mainNav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>Welcome to the Interactive Web Page</h2>
+        <p>This is some sample content. Scroll down to see the navigation menu change its appearance. The menu has a fixed position and will always be visible at the top of the viewport, providing easy access to all sections of the site. This fixed positioning is crucial for user experience on long-scrolling pages.</p>
+        <p>The **`fixed`** CSS position property ensures the element stays in place relative to the browser window. We also add padding to the body to prevent the content from being hidden behind the menu. The **`z-index`** property ensures the menu appears on top of other content.</p>
+        <p>As you scroll, a JavaScript function listens for the **`scroll`** event. Once the scroll position passes a specific threshold, it adds a new class, **`.scrolled`**, to the navigation bar element. This class contains the new styles for the background color, font color, and other visual changes. This is a common and effective technique for creating dynamic headers.</p>
+        <p>The **`:hover`** pseudo-class in CSS handles the mouse-over effect on each link. This provides immediate, non-intrusive feedback to the user, enhancing the interactivity and overall feel of the menu. Together, these techniques create a professional and responsive user interface.</p>
+    </div>
+
+    <script>
+        // JavaScript for adding interactivity
+        const mainNav = document.getElementById('mainNav');
+        const scrollThreshold = 50; // The number of pixels to scroll before the color changes
+
+        window.addEventListener('scroll', () => {
+            // Check if the user has scrolled beyond the threshold
+            if (window.scrollY > scrollThreshold) {
+                // Add the 'scrolled' class to the navbar
+                mainNav.classList.add('scrolled');
+            } else {
+                // Remove the 'scrolled' class if the user scrolls back up
+                mainNav.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+</body>
+</html>
+```
